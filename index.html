@@ -1,291 +1,517 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wedding Photo Cloud</title>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<meta name="theme-color" content="#faf9f6">
 
-    body {
-      margin: 0;
-      padding: 20px;
-      min-height: 100vh;
-      font-family: Georgia, serif;
-      background: #faf9f6;
-      color: #333;
-      text-align: center;
-    }
+<title>A&N Wedding | Photo Booth</title>
 
-    .container {
-      max-width: 480px;
-      margin: auto;
-    }
+<style>
 
-    h1 {
-      font-size: 30px;
-      color: #a88b55;
-      margin-bottom: 5px;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    .subtitle {
-      color: #888;
-      margin-bottom: 25px;
-    }
+body {
+  margin: 0;
+  padding: 24px 18px 35px;
+  background: #faf9f6;
+  color: #514a40;
+  font-family: Georgia, serif;
+  text-align: center;
+}
 
-    .camera-box {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 3 / 4;
-      background: #222;
-      overflow: hidden;
-      border: 12px solid white;
-      outline: 1px solid #d5bd91;
-      box-shadow: 0 4px 15px #0002;
-    }
+.container {
+  max-width: 440px;
+  margin: auto;
+}
 
-    video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
+h1 {
+  color: #a88b55;
+  font-size: 36px;
+  font-weight: normal;
+  margin: 12px 0;
+  letter-spacing: 2px;
+}
 
-    .frame-overlay {
-      position: absolute;
-      inset: 0;
-      border: 5px solid white;
-      pointer-events: none;
-    }
+h2 {
+  font-weight: normal;
+  font-size: 24px;
+  color: #a88b55;
+}
 
-    .frame-label {
-      position: absolute;
-      bottom: 12px;
-      left: 0;
-      right: 0;
-      color: white;
-      font-family: Georgia, serif;
-      font-size: 15px;
-      text-shadow: 0 1px 5px #000;
-      pointer-events: none;
-    }
+.subtitle {
+  font-size: 14px;
+  color: #938879;
+  line-height: 1.7;
+}
 
-    #preview {
-      display: none;
-      width: 100%;
-      height: auto;
-      border: 12px solid white;
-      outline: 1px solid #d5bd91;
-      box-shadow: 0 4px 15px #0002;
-    }
+.welcome {
+  padding: 35px 12px 20px;
+}
 
-    button {
-      width: 100%;
-      padding: 14px;
-      margin-top: 12px;
-      border: none;
-      border-radius: 8px;
-      background: #ad9362;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
+.ornament {
+  color: #c3a878;
+  font-size: 23px;
+  margin: 14px 0;
+}
 
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+.date {
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: #a88b55;
+  margin: 20px 0;
+}
 
-    .secondary {
-      background: #777;
-    }
+button {
+  width: 100%;
+  padding: 15px;
+  margin-top: 12px;
+  background: #ad9362;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-family: Georgia, serif;
+  font-size: 16px;
+  cursor: pointer;
+  transition: .2s;
+}
 
-    input {
-      width: 100%;
-      padding: 13px;
-      margin-top: 18px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 15px;
-    }
+button:active {
+  transform: scale(.98);
+}
 
-    #status {
-      margin-top: 18px;
-      font-size: 14px;
-      line-height: 1.5;
-    }
+button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
 
-    .hidden {
-      display: none !important;
-    }
+.secondary {
+  background: #8c8478;
+}
 
-    #startScreen {
-      padding: 30px 15px;
-    }
+.hidden {
+  display: none !important;
+}
 
-    #cameraScreen {
-      display: none;
-    }
+#cameraScreen,
+#previewScreen,
+#successScreen {
+  display: none;
+}
 
-    .small {
-      font-size: 12px;
-      color: #999;
-      margin-top: 25px;
-    }
-  </style>
+.camera-wrapper {
+  width: 100%;
+  background: white;
+  padding: 12px;
+  box-shadow: 0 4px 18px #00000012;
+}
+
+.camera-view {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: #242424;
+}
+
+video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#cameraLabel {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  color: white;
+  font-size: 12px;
+  text-shadow: 0 2px 5px black;
+  pointer-events: none;
+}
+
+.camera-instructions {
+  margin: 14px 0;
+  font-size: 13px;
+  color: #948b7e;
+}
+
+#previewImage {
+  width: 100%;
+  display: block;
+  box-shadow: 0 4px 18px #00000012;
+}
+
+.caption-input {
+  width: 100%;
+  padding: 13px;
+  margin-top: 15px;
+  border: 1px solid #ded8ce;
+  border-radius: 4px;
+  background: white;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  outline-color: #ad9362;
+}
+
+.consent {
+  display: flex;
+  align-items: flex-start;
+  text-align: left;
+  gap: 9px;
+  margin-top: 16px;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #777;
+}
+
+.consent input {
+  margin-top: 3px;
+}
+
+#status {
+  min-height: 28px;
+  margin-top: 18px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #8d7958;
+}
+
+.success-icon {
+  font-size: 65px;
+  color: #ad9362;
+  margin: 25px 0;
+}
+
+.footer {
+  margin-top: 35px;
+  color: #b0a597;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+</style>
+
 </head>
 
 <body>
 
 <div class="container">
 
-  <div id="startScreen">
-    <h1>Wedding Photo Cloud</h1>
+<!-- WELCOME SCREEN -->
+
+<section id="welcomeScreen">
+
+  <div class="welcome">
+
+    <div class="ornament">✦ ♡ ✦</div>
+
+    <h1>A&N Wedding</h1>
+
     <p class="subtitle">
-      Capture beautiful memories with us ♡
+      We are delighted to have you here.
+      <br>
+      Capture a moment and make it a memory.
+    </p>
+
+    <div class="date">
+      05 DECEMBER 2026
+    </div>
+
+    <div class="ornament">♡</div>
+
+    <p class="subtitle">
+      Your beautiful memories belong here.
     </p>
 
     <button onclick="startCamera()">
       Start Photobooth
     </button>
+
   </div>
 
-  <div id="cameraScreen">
+</section>
 
-    <h1>Our Wedding</h1>
-    <p class="subtitle">Take a picture and share your memories!</p>
 
-    <div class="camera-box" id="cameraBox">
-      <video id="video" autoplay playsinline muted></video>
+<!-- CAMERA SCREEN -->
 
-      <div class="frame-overlay"></div>
+<section id="cameraScreen">
 
-      <div class="frame-label">
-        ✦ OUR WEDDING ✦
+  <h2>Capture Your Moment</h2>
+
+  <p class="subtitle">
+    Smile! Let's make a memory.
+  </p>
+
+  <div class="camera-wrapper">
+
+    <div class="camera-view">
+
+      <video id="video"
+             autoplay
+             muted
+             playsinline>
+      </video>
+
+      <div id="cameraLabel">
+        A&N WEDDING
       </div>
+
     </div>
 
-    <canvas id="canvas" class="hidden"></canvas>
-
-    <img id="preview" alt="Photo preview">
-
-    <button id="switchButton" class="secondary"
-      onclick="switchCamera()">
-      Switch Camera
-    </button>
-
-    <button id="captureButton" onclick="capturePhoto()">
-      Take Picture
-    </button>
-
-    <button id="retakeButton"
-      class="secondary hidden" onclick="retakePhoto()">
-      Retake Picture
-    </button>
-
-    <input
-      type="text"
-      id="caption"
-      placeholder="Write a message for the couple (optional)"
-      maxlength="150"
-    >
-
-    <button id="uploadButton" class="hidden"
-      onclick="uploadPhoto()">
-      Submit Photo
-    </button>
-
-    <div id="status"></div>
-
-    <button id="againButton" class="secondary hidden"
-      onclick="takeAnother()">
-      Take Another Picture
-    </button>
-
   </div>
 
-  <p class="small">
-    Made with love ♡
+  <p class="camera-instructions">
+    Position yourself inside the frame.
   </p>
+
+  <button id="switchButton"
+          class="secondary"
+          onclick="switchCamera()">
+    ↻ Switch Camera
+  </button>
+
+  <button id="captureButton"
+          onclick="capturePhoto()">
+    Take Picture
+  </button>
+
+  <button class="secondary"
+          onclick="goHome()">
+    Back
+  </button>
+
+</section>
+
+
+<!-- PREVIEW SCREEN -->
+
+<section id="previewScreen">
+
+  <h2>Your Wedding Memory</h2>
+
+  <p class="subtitle">
+    Here's your Polaroid!
+  </p>
+
+  <img id="previewImage"
+       alt="Your A&N Wedding photograph">
+
+  <input
+    id="caption"
+    class="caption-input"
+    type="text"
+    maxlength="100"
+    placeholder="Write a message for the couple (optional)"
+  >
+
+  <p class="subtitle">
+    Your message will appear on your Polaroid.
+  </p>
+
+  <label class="consent">
+
+    <input
+      type="checkbox"
+      id="consent"
+    >
+
+    <span>
+      I agree to share this photograph with the couple
+      as part of their wedding memories.
+    </span>
+
+  </label>
+
+  <button id="uploadButton"
+          onclick="uploadPhoto()">
+    Submit My Photo ♡
+  </button>
+
+  <button id="retakeButton"
+          class="secondary"
+          onclick="retakePhoto()">
+    Retake Picture
+  </button>
+
+  <div id="status"></div>
+
+</section>
+
+
+<!-- SUCCESS SCREEN -->
+
+<section id="successScreen">
+
+  <div class="success-icon">♡</div>
+
+  <h1>Thank You!</h1>
+
+  <p class="subtitle">
+    Your beautiful memory has been saved.
+    <br><br>
+    Thank you for celebrating
+    A&N Wedding with us.
+  </p>
+
+  <div class="ornament">✦ ♡ ✦</div>
+
+  <button onclick="takeAnother()">
+    Take Another Picture
+  </button>
+
+  <button class="secondary"
+          onclick="goHome()">
+    Finish
+  </button>
+
+</section>
+
+
+<canvas id="canvas" class="hidden"></canvas>
+
+<div class="footer">
+  A&N WEDDING · 05.12.2026
+  <br><br>
+  Made with love ♡
+</div>
 
 </div>
 
-<!-- Hidden upload form and iframe -->
+
+<!-- HIDDEN UPLOAD FORM -->
+
 <form id="uploadForm"
       method="POST"
       target="uploadFrame"
-      class="hidden">
+      style="display:none;">
 
-  <input type="hidden" name="token" id="uploadToken">
-  <input type="hidden" name="caption" id="uploadCaption">
-  <input type="hidden" name="photoData" id="uploadPhoto">
+  <input type="hidden"
+         name="token"
+         id="uploadToken">
+
+  <input type="hidden"
+         name="caption"
+         id="uploadCaption">
+
+  <input type="hidden"
+         name="photoData"
+         id="uploadPhoto">
 
 </form>
 
-<iframe name="uploadFrame"
-        id="uploadFrame"
-        class="hidden"></iframe>
+<iframe
+  name="uploadFrame"
+  id="uploadFrame"
+  style="display:none;">
+</iframe>
 
 
 <script>
 
-// =====================================
-// CONFIGURATION
-// =====================================
+/**************************************************
+ * A&N WEDDING CONFIGURATION
+ **************************************************/
 
-// Paste your deployed Apps Script URL here.
-const UPLOAD_API = "https://script.google.com/macros/s/AKfycbx7K4SNAK0TYRTfaKnlhj9b9Y90ezQcDKp3h8nU2pv--17In61TKTqXwXb6XqBaDlKTMA/exec";
+// IMPORTANT: Replace this with your Apps Script URL.
 
-// Wedding title
-const WEDDING_TITLE = "OUR WEDDING";
+const UPLOAD_API =
+  "YOUR_APPS_SCRIPT_EXEC_URL";
 
-// Maximum image size: 8 MB
-const MAX_IMAGE_SIZE = 8 * 1024 * 1024;
+const COUPLE_NAME = "A&N Wedding";
+
+const WEDDING_DATE = "5 December 2026";
+
+const MAX_UPLOAD_SIZE = 2 * 1024 * 1024;
 
 
-// =====================================
-// ELEMENTS
-// =====================================
+/**************************************************
+ * ELEMENTS
+ **************************************************/
 
 const video = document.getElementById("video");
+
 const canvas = document.getElementById("canvas");
-const preview = document.getElementById("preview");
 
-const cameraBox = document.getElementById("cameraBox");
+const ctx = canvas.getContext("2d");
 
-const startScreen = document.getElementById("startScreen");
-const cameraScreen = document.getElementById("cameraScreen");
+const previewImage =
+  document.getElementById("previewImage");
 
-const captureButton = document.getElementById("captureButton");
-const retakeButton = document.getElementById("retakeButton");
-const uploadButton = document.getElementById("uploadButton");
-const switchButton = document.getElementById("switchButton");
-const againButton = document.getElementById("againButton");
+const statusBox =
+  document.getElementById("status");
 
-const statusBox = document.getElementById("status");
+const uploadButton =
+  document.getElementById("uploadButton");
+
+const retakeButton =
+  document.getElementById("retakeButton");
+
+const switchButton =
+  document.getElementById("switchButton");
 
 let stream = null;
-let currentFacing = "user";
-let selectedDeviceId = null;
+
+let facingMode = "user";
+
 let capturedPhoto = null;
+
 let uploadTimer = null;
-let uploadTimedOut = false;
+
+let uploadAttempts = 0;
+
+let uploadToken = null;
+
+let uploading = false;
+
+let activeScript = null;
+
+let rawPhotoCanvas = document.createElement("canvas");
+let rawPhotoCtx = rawPhotoCanvas.getContext("2d");
+
+/**************************************************
+ * SCREEN MANAGEMENT
+ **************************************************/
+
+function showScreen(id) {
+
+  [
+    "welcomeScreen",
+    "cameraScreen",
+    "previewScreen",
+    "successScreen"
+  ].forEach(screenId => {
+
+    document.getElementById(screenId).style.display =
+      screenId === id ? "block" : "none";
+
+  });
+
+}
 
 
-// =====================================
-// START CAMERA
-// =====================================
+/**************************************************
+ * START CAMERA
+ **************************************************/
 
 async function startCamera() {
 
   try {
 
-    if (!navigator.mediaDevices ||
-        !navigator.mediaDevices.getUserMedia) {
+    stopCamera();
+
+    if (
+      !navigator.mediaDevices ||
+      !navigator.mediaDevices.getUserMedia
+    ) {
 
       throw new Error(
         "Camera requires an HTTPS website."
@@ -293,138 +519,68 @@ async function startCamera() {
 
     }
 
-    stopCamera();
+    stream =
+      await navigator.mediaDevices.getUserMedia({
 
-    // Start with the browser's default camera.
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: false
-    });
+        video: {
+          facingMode: {
+            ideal: facingMode
+          },
+
+          width: {
+            ideal: 1600
+          },
+
+          height: {
+            ideal: 2000
+          }
+
+        },
+
+        audio: false
+
+      });
 
     video.srcObject = stream;
 
+    video.style.transform =
+      facingMode === "user"
+        ? "scaleX(-1)"
+        : "none";
+
     await video.play();
 
-    startScreen.style.display = "none";
-    cameraScreen.style.display = "block";
-
-    cameraBox.style.display = "block";
-    preview.style.display = "none";
-
-    captureButton.classList.remove("hidden");
-    switchButton.classList.remove("hidden");
+    showScreen("cameraScreen");
 
     statusBox.textContent = "";
 
-    await updateCameraInfo();
+    const devices =
+      await navigator.mediaDevices.enumerateDevices();
+
+    const cameras = devices.filter(
+      d => d.kind === "videoinput"
+    );
+
+    switchButton.disabled =
+      cameras.length < 2;
 
   } catch (error) {
 
-    statusBox.textContent =
+    showScreen("welcomeScreen");
+
+    alert(
       "Camera error: " + error.message +
-      ". Please allow camera access and try again.";
+      "\n\nPlease allow camera access and try again."
+    );
 
   }
 
 }
 
 
-// =====================================
-// CAMERA INFORMATION
-// =====================================
-
-async function updateCameraInfo() {
-
-  try {
-
-    const devices =
-      await navigator.mediaDevices.enumerateDevices();
-
-    const cameras = devices.filter(
-      device => device.kind === "videoinput"
-    );
-
-    const activeTrack = stream.getVideoTracks()[0];
-
-    if (activeTrack) {
-      selectedDeviceId =
-        activeTrack.getSettings().deviceId || null;
-    }
-
-    if (cameras.length < 2) {
-      switchButton.disabled = true;
-    } else {
-      switchButton.disabled = false;
-    }
-
-  } catch (error) {
-
-    console.log(error);
-
-  }
-
-}
-
-
-// =====================================
-// SWITCH CAMERA
-// =====================================
-
-async function switchCamera() {
-
-  try {
-
-    const devices =
-      await navigator.mediaDevices.enumerateDevices();
-
-    const cameras = devices.filter(
-      device => device.kind === "videoinput"
-    );
-
-    if (cameras.length < 2) {
-      statusBox.textContent =
-        "Only one camera was detected.";
-      return;
-    }
-
-    const currentIndex = cameras.findIndex(
-      device => device.deviceId === selectedDeviceId
-    );
-
-    const nextIndex =
-      (currentIndex + 1) % cameras.length;
-
-    const nextCamera = cameras[nextIndex];
-
-    stopCamera();
-
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: {
-        deviceId: {
-          exact: nextCamera.deviceId
-        }
-      },
-      audio: false
-    });
-
-    video.srcObject = stream;
-    selectedDeviceId = nextCamera.deviceId;
-
-    await video.play();
-
-  } catch (error) {
-
-    statusBox.textContent =
-      "Unable to switch camera: " + error.message;
-
-  }
-
-}
-
-
-// =====================================
-// STOP CAMERA
-// =====================================
+/**************************************************
+ * STOP CAMERA
+ **************************************************/
 
 function stopCamera() {
 
@@ -438,299 +594,410 @@ function stopCamera() {
 
   }
 
+  video.srcObject = null;
+
 }
 
 
-// =====================================
-// CAPTURE PHOTO
-// =====================================
+/**************************************************
+ * SWITCH FRONT / REAR CAMERA
+ **************************************************/
+
+async function switchCamera() {
+
+  facingMode =
+    facingMode === "user"
+      ? "environment"
+      : "user";
+
+  await startCamera();
+
+}
+
+
+/**************************************************
+ * CAPTURE PHOTO
+ * Create a permanent Polaroid image.
+ **************************************************/
+
 
 function capturePhoto() {
 
   if (!stream || !video.videoWidth) {
-    statusBox.textContent =
-      "Camera is not ready. Please try again.";
+    alert("Camera is not ready.");
     return;
   }
 
-  const width = video.videoWidth;
-  const height = video.videoHeight;
+  const sw = video.videoWidth;
+  const sh = video.videoHeight;
+
+  const ratio = 3 / 4;
+
+  let cw = sw;
+  let ch = sh;
+
+  if (sw / sh > ratio) {
+    cw = sh * ratio;
+  } else {
+    ch = sw / ratio;
+  }
+
+  const sx = (sw - cw) / 2;
+  const sy = (sh - ch) / 2;
+
+  rawPhotoCanvas.width = 1100;
+  rawPhotoCanvas.height = 1467;
+
+  rawPhotoCtx.clearRect(0, 0, 1100, 1467);
+
+  rawPhotoCtx.save();
+
+  if (facingMode === "user") {
+    rawPhotoCtx.translate(1100, 0);
+    rawPhotoCtx.scale(-1, 1);
+  }
+
+  rawPhotoCtx.drawImage(
+    video,
+    sx, sy, cw, ch,
+    0, 0, 1100, 1467
+  );
+
+  rawPhotoCtx.restore();
+
+  composePhoto();
+
+  showScreen("previewScreen");
+
+  statusBox.textContent = "";
+
+  document.getElementById("consent").checked = false;
+}
+
+
+function composePhoto() {
+
+  const imageWidth = 1100;
+  const imageHeight = 1467;
+  const margin = 55;
+  const footerHeight = 300;
+
+  const width = imageWidth + margin * 2;
+  const height = imageHeight + margin + footerHeight;
 
   canvas.width = width;
   canvas.height = height;
 
-  const ctx = canvas.getContext("2d");
-
-  // Mirror front camera preview.
-  const track = stream.getVideoTracks()[0];
-  const settings = track.getSettings();
-
-  const isFrontCamera =
-    settings.facingMode === "user";
-
-  if (isFrontCamera) {
-    ctx.translate(width, 0);
-    ctx.scale(-1, 1);
-  }
-
-  ctx.drawImage(video, 0, 0, width, height);
-
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
-
-  // Permanent white frame.
-  const border = Math.round(width * 0.035);
-
-  ctx.strokeStyle = "#ffffff";
-  ctx.lineWidth = border;
-
-  ctx.strokeRect(
-    border / 2,
-    border / 2,
-    width - border,
-    height - border
-  );
-
-  // Gold inner border.
-  ctx.strokeStyle = "#c5a66c";
-  ctx.lineWidth = Math.max(2, width * 0.003);
-
-  ctx.strokeRect(
-    border,
-    border,
-    width - border * 2,
-    height - border * 2
-  );
-
-  // Wedding footer.
-  const footerHeight = Math.round(height * 0.09);
-
   ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.drawImage(
+    rawPhotoCanvas,
+    margin,
+    margin
+  );
+
+  ctx.fillStyle = "#c5aa79";
 
   ctx.fillRect(
-    0,
-    height - footerHeight,
-    width,
-    footerHeight
+    width * 0.35,
+    margin + imageHeight + 25,
+    width * 0.30,
+    3
   );
 
-  ctx.fillStyle = "#a88b55";
   ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.font = `bold ${Math.round(width * 0.035)}px Georgia`;
+  ctx.fillStyle = "#a88b55";
+  ctx.font = "bold 65px Georgia";
 
   ctx.fillText(
-    "✦ " + WEDDING_TITLE + " ✦",
+    COUPLE_NAME,
     width / 2,
-    height - footerHeight / 2
+    margin + imageHeight + 110
   );
+
+  ctx.fillStyle = "#8e8578";
+  ctx.font = "35px Georgia";
+
+  ctx.fillText(
+    WEDDING_DATE,
+    width / 2,
+    margin + imageHeight + 165
+  );
+
+  const caption =
+    document.getElementById("caption").value.trim();
+
+  if (caption) {
+
+    ctx.fillStyle = "#776c5c";
+    ctx.font = "italic 32px Georgia";
+
+    ctx.fillText(
+      caption,
+      width / 2,
+      margin + imageHeight + 235,
+      width - 100
+    );
+
+  }
 
   capturedPhoto = canvas.toDataURL(
     "image/jpeg",
-    0.85
+    0.78
   );
 
-  preview.src = capturedPhoto;
-
-  cameraBox.style.display = "none";
-  preview.style.display = "block";
-
-  captureButton.classList.add("hidden");
-  switchButton.classList.add("hidden");
-
-  retakeButton.classList.remove("hidden");
-  uploadButton.classList.remove("hidden");
-
-  statusBox.textContent = "Preview your photo before submitting.";
+  previewImage.src = capturedPhoto;
 
 }
 
 
-// =====================================
-// RETAKE PHOTO
-// =====================================
+// Update the Polaroid whenever the guest edits the caption.
 
-function retakePhoto() {
+document.getElementById("caption").addEventListener(
+  "input",
+  function() {
+    if (rawPhotoCanvas.width > 0) {
+      composePhoto();
+    }
+  }
+);
+
+
+/**************************************************
+ * RETAKE
+ **************************************************/
+
+async function retakePhoto() {
 
   capturedPhoto = null;
 
-  cameraBox.style.display = "block";
-  preview.style.display = "none";
+  document.getElementById("caption").value = "";
 
-  captureButton.classList.remove("hidden");
-  switchButton.classList.remove("hidden");
-
-  retakeButton.classList.add("hidden");
-  uploadButton.classList.add("hidden");
-
-  statusBox.textContent = "";
+  await startCamera();
 
 }
 
 
-// =====================================
-// UPLOAD PHOTO
-// =====================================
+/**************************************************
+ * SUBMIT PHOTO
+ **************************************************/
 
 function uploadPhoto() {
 
+  if (uploading) return;
+
   if (!capturedPhoto) {
-    statusBox.textContent = "Please take a picture first.";
+
+    alert("Please take a picture first.");
+
     return;
+
   }
 
-  if (UPLOAD_API === "YOUR_APPS_SCRIPT_EXEC_URL") {
-    statusBox.textContent =
-      "Please configure your Apps Script URL first.";
+  if (
+    UPLOAD_API === "https://script.google.com/macros/s/AKfycbxFDWuYD0Bk7UHe-UYAJV1IXshfbW0y-ejjOpA1vt5hF1Xl8BAehAl_SUHCIDqQjJIHEw/exec"
+  ) {
+
+    alert(
+      "Please configure your Apps Script URL first."
+    );
+
     return;
+
   }
 
-  const photoSize = Math.ceil(
-    capturedPhoto.length * 0.75
-  );
+  if (!document.getElementById("consent").checked) {
 
-  if (photoSize > MAX_IMAGE_SIZE) {
-    statusBox.textContent =
-      "Photo is too large. Please take another picture.";
+    alert(
+      "Please agree to share your photograph first."
+    );
+
     return;
+
   }
+
+
+  // Check photo size.
+
+  const estimatedSize =
+    Math.ceil(capturedPhoto.length * 0.75);
+
+  if (estimatedSize > MAX_UPLOAD_SIZE) {
+
+    alert(
+      "Your photograph is too large. " +
+      "Please retake your picture."
+    );
+
+    return;
+
+  }
+
+
+  uploading = true;
+
+  uploadAttempts = 0;
+
+  uploadToken =
+    "AN_" +
+    Date.now() +
+    "_" +
+    Math.random().toString(36).substring(2, 12);
+
 
   uploadButton.disabled = true;
+
   retakeButton.disabled = true;
 
   statusBox.textContent =
-    "Uploading your photo... Please wait.";
+    "Uploading your beautiful memory... ♡";
 
-  const token =
-    (crypto.randomUUID)
-      ? crypto.randomUUID()
-      : Date.now() + "-" + Math.random();
 
-  document.getElementById("uploadToken").value = token;
+  // Fill hidden upload form.
+
+  document.getElementById("uploadToken").value =
+    uploadToken;
 
   document.getElementById("uploadCaption").value =
-    document.getElementById("caption").value;
+    document.getElementById("caption").value.trim();
 
   document.getElementById("uploadPhoto").value =
     capturedPhoto;
 
-  // Start checking upload status.
-  startStatusPolling(token);
 
-  // Submit using a hidden HTML form.
-  const form = document.getElementById("uploadForm");
+  // Begin checking upload status.
+
+  startStatusPolling();
+
+
+  // Send photo to Google Apps Script.
+
+  const form =
+    document.getElementById("uploadForm");
 
   form.action = UPLOAD_API;
+
   form.submit();
 
 }
 
 
-// =====================================
-// CHECK UPLOAD STATUS USING JSONP
-// =====================================
+/**************************************************
+ * UPLOAD STATUS POLLING
+ **************************************************/
 
-function startStatusPolling(token) {
+function startStatusPolling() {
 
   clearInterval(uploadTimer);
-  uploadTimedOut = false;
 
-  let attempts = 0;
-
-  uploadTimer = setInterval(() => {
-
-    attempts++;
-
-    if (attempts > 60) {
-
-      clearInterval(uploadTimer);
-      uploadTimedOut = true;
-
-      statusBox.textContent =
-        "Upload status is taking longer than expected. " +
-        "Please check Google Drive before trying again.";
-
-      uploadButton.disabled = false;
-      retakeButton.disabled = false;
-
-      return;
-
-    }
-
-    const callbackName = "handleUploadStatus";
-
-    window[callbackName] = function(data) {
-
-      if (!data) return;
-
-      const result = String(
-        data.status || data.state || ""
-      ).toLowerCase();
-
-      if (
-        data.ok === true ||
-        data.success === true ||
-        ["success", "completed", "complete", "done"]
-          .includes(result)
-      ) {
-
-        clearInterval(uploadTimer);
-
-        statusBox.textContent =
-          "✓ Your photo has been successfully uploaded!";
-
-        uploadButton.classList.add("hidden");
-        retakeButton.classList.add("hidden");
-
-        againButton.classList.remove("hidden");
-
-        stopCamera();
-
-      } else if (
-        data.ok === false ||
-        data.success === false ||
-        ["failed", "error"].includes(result)
-      ) {
-
-        clearInterval(uploadTimer);
-
-        statusBox.textContent =
-          "Upload failed: " +
-          (data.message || data.error || "Please try again.");
-
-        uploadButton.disabled = false;
-        retakeButton.disabled = false;
-
-      }
-
-    };
-
-    const script = document.createElement("script");
-
-    script.src =
-      UPLOAD_API +
-      "?status=" + encodeURIComponent(token) +
-      "&callback=" + callbackName +
-      "&_=" + Date.now();
-
-    script.onerror = function() {
-      console.log("Unable to check upload status.");
-    };
-
-    document.body.appendChild(script);
-
-    // Remove old JSONP scripts.
-    setTimeout(() => {
-      script.remove();
-    }, 5000);
-
-  }, 2000);
+  uploadTimer = setInterval(
+    checkUploadStatus,
+    2500
+  );
 
 }
 
 
-// =====================================
-// TAKE ANOTHER PHOTO
-// =====================================
+function checkUploadStatus() {
+
+  if (!uploading || !uploadToken) return;
+
+  uploadAttempts++;
+
+  if (uploadAttempts > 60) {
+
+    clearInterval(uploadTimer);
+
+    statusBox.textContent =
+      "Upload is taking longer than expected. " +
+      "Please check with the couple before retrying.";
+
+    uploadButton.disabled = false;
+
+    retakeButton.disabled = false;
+
+    uploading = false;
+
+    return;
+
+  }
+
+
+  if (activeScript) {
+
+    activeScript.remove();
+
+  }
+
+  const script =
+    document.createElement("script");
+
+  activeScript = script;
+
+  script.src =
+    UPLOAD_API +
+    "?status=" + encodeURIComponent(uploadToken) +
+    "&callback=handleUploadStatus" +
+    "&_=" + Date.now();
+
+  script.onerror = function() {
+
+    console.log("Status check failed.");
+
+  };
+
+  document.body.appendChild(script);
+
+}
+
+
+/**************************************************
+ * STATUS RESPONSE FROM GOOGLE APPS SCRIPT
+ **************************************************/
+
+function handleUploadStatus(data) {
+
+  if (!data) return;
+
+  if (data.status === "success") {
+
+    clearInterval(uploadTimer);
+
+    uploading = false;
+
+    stopCamera();
+
+    statusBox.textContent = "";
+
+    showScreen("successScreen");
+
+    capturedPhoto = null;
+
+  }
+
+  else if (data.status === "failed") {
+
+    clearInterval(uploadTimer);
+
+    uploading = false;
+
+    uploadButton.disabled = false;
+
+    retakeButton.disabled = false;
+
+    statusBox.textContent =
+      "Upload failed: " +
+      (data.message || "Please try again.");
+
+  }
+
+}
+
+
+/**************************************************
+ * TAKE ANOTHER PHOTO
+ **************************************************/
 
 async function takeAnother() {
 
@@ -738,28 +1005,52 @@ async function takeAnother() {
 
   capturedPhoto = null;
 
-  document.getElementById("caption").value = "";
+  uploadToken = null;
 
-  preview.style.display = "none";
-  cameraBox.style.display = "block";
-
-  uploadButton.classList.add("hidden");
-  retakeButton.classList.add("hidden");
-  againButton.classList.add("hidden");
+  uploading = false;
 
   uploadButton.disabled = false;
+
   retakeButton.disabled = false;
+
+  document.getElementById("caption").value = "";
+
+  document.getElementById("consent").checked = false;
 
   await startCamera();
 
 }
 
 
-// =====================================
-// CLEAN UP CAMERA
-// =====================================
+/**************************************************
+ * RETURN HOME
+ **************************************************/
 
-window.addEventListener("pagehide", stopCamera);
+function goHome() {
+
+  stopCamera();
+
+  clearInterval(uploadTimer);
+
+  capturedPhoto = null;
+
+  uploadToken = null;
+
+  uploading = false;
+
+  showScreen("welcomeScreen");
+
+}
+
+
+/**************************************************
+ * CLEAN UP
+ **************************************************/
+
+window.addEventListener(
+  "pagehide",
+  stopCamera
+);
 
 </script>
 
