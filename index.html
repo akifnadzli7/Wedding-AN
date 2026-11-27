@@ -708,6 +708,7 @@ function uploadPhoto() {
  * RECEIVE APPS SCRIPT RESPONSE
  ****************************************************/
 
+
 function receiveUploadResult(event) {
 
   const result = event.data;
@@ -722,9 +723,14 @@ function receiveUploadResult(event) {
 
   clearTimeout(uploadTimer);
 
-  window.removeEventListener("message", receiveUploadResult);
+  window.removeEventListener(
+    "message",
+    receiveUploadResult
+  );
 
   if (result.status === "success") {
+
+    document.getElementById("submitButton").disabled = false;
 
     stopCamera();
 
@@ -733,13 +739,14 @@ function receiveUploadResult(event) {
   } else {
 
     document.getElementById("errorMessage").textContent =
-      result.message || "The photograph could not be uploaded.";
+      result.message || "Upload failed.";
 
     showScreen(errorPanel);
 
   }
 
 }
+
 
 
 /****************************************************
