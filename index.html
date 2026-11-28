@@ -846,11 +846,18 @@ function drawPolaroid() {
     1700
   );
 
-  // Update the final image used for preview and upload
-  capturedPhoto = photoCanvas.toDataURL("image/jpeg", 0.92);
+  
+// Generate the final Polaroid image
+capturedPhoto = photoCanvas.toDataURL("image/jpeg", 0.92);
+
+// Display the actual image in the preview
+const previewImage = document.getElementById("previewImage");
+
+previewImage.src = capturedPhoto;
+previewImage.style.display = "block";
 
 }
-
+v
 
 
 // CAPTURE PHOTO
