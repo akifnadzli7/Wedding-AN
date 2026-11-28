@@ -753,12 +753,14 @@ await video.play();
 
 let capturedPhotoSource = null;
 
+
 function drawPolaroid() {
 
   if (!capturedPhotoSource) return;
 
+  // Polaroid canvas
   const width = 1200;
-  const height = 1500;
+  const height = 1800;
 
   photoCanvas.width = width;
   photoCanvas.height = height;
@@ -769,15 +771,14 @@ function drawPolaroid() {
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, width, height);
 
-// 4:3 landscape photo area - centred in Polaroid
-const photoWidth = 1060;
-const photoHeight = 1060;
+  // Portrait photo area (3:4 ratio)
+  const photoWidth = 1060;
+  const photoHeight = 1413;
 
-const photoX = (width - photoWidth) / 2;
+  // Equal 70px top and side borders
+  const photoX = 70;
+  const photoY = 70;
 
-// Centre the photo in the upper area of the Polaroid
-const photoY = (1180 - photoHeight) / 2;
-  
   const videoWidth = capturedPhotoSource.width;
   const videoHeight = capturedPhotoSource.height;
 
@@ -789,6 +790,7 @@ const photoY = (1180 - photoHeight) / 2;
   let sourceWidth = videoWidth;
   let sourceHeight = videoHeight;
 
+  // Crop image to portrait ratio
   if (videoRatio > targetRatio) {
     sourceWidth = videoHeight * targetRatio;
     sourceX = (videoWidth - sourceWidth) / 2;
@@ -797,7 +799,7 @@ const photoY = (1180 - photoHeight) / 2;
     sourceY = (videoHeight - sourceHeight) / 2;
   }
 
-  // Draw the captured photo
+  // Draw captured photo
   ctx.drawImage(
     capturedPhotoSource,
     sourceX,
@@ -818,7 +820,7 @@ const photoY = (1180 - photoHeight) / 2;
   ctx.fillText(
     "Alif&Nadhirah Wedding",
     width / 2,
-    1240
+    1570
   );
 
   // Wedding date
@@ -828,10 +830,10 @@ const photoY = (1180 - photoHeight) / 2;
   ctx.fillText(
     "5 DECEMBER 2026",
     width / 2,
-    1290
+    1620
   );
 
-  // Caption: always use the latest text
+  // Caption
   const caption =
     captionInput.value.trim() || "A memory to remember";
 
@@ -841,18 +843,14 @@ const photoY = (1180 - photoHeight) / 2;
   ctx.fillText(
     caption.substring(0, 55),
     width / 2,
-    1370
+    1700
   );
 
-  // Update the final uploaded image
-  capturedPhoto = photoCanvas.toDataURL(
-    "image/jpeg",
-    0.75
-  );
+  // Update the final image used for preview and upload
+  capturedPhoto = photoCanvas.toDataURL("image/jpeg", 0.92);
 
-  previewImage.src = capturedPhoto;
-  previewCaption.textContent = caption;
 }
+
 
 
 // CAPTURE PHOTO
