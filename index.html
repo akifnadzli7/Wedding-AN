@@ -857,7 +857,16 @@ previewImage.src = capturedPhoto;
 previewImage.style.display = "block";
 
 }
-v
+  // Generate the final Polaroid image
+  capturedPhoto = photoCanvas.toDataURL("image/jpeg", 0.92);
+
+  // Update preview image safely
+  const previewImage = document.getElementById("previewImage");
+
+  if (previewImage) {
+    previewImage.src = capturedPhoto;
+    previewImage.style.display = "block";
+  }
 
 
 // CAPTURE PHOTO
