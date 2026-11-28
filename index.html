@@ -734,163 +734,172 @@
     startCameraButton.addEventListener("click", startCamera);
 
 
-    // CAPTURE PHOTO AND CREATE POLAROID
+    
+// CAPTURE PHOTO AND CREATE POLAROID
 
-    captureButton.addEventListener("click", function() {
+let capturedPhotoSource = null;
 
-      if (!cameraStream || !video.videoWidth) {
-        showCameraError("Please start your camera first.");
-        return;
-      }
+function drawPolaroid() {
 
-      const width = 1200;
-      const height = 1500;
+  if (!capturedPhotoSource) return;
 
-      photoCanvas.width = width;
-      photoCanvas.height = height;
+  const width = 1200;
+  const height = 1500;
 
-      const ctx = photoCanvas.getContext("2d");
+  photoCanvas.width = width;
+  photoCanvas.height = height;
 
-      // White Polaroid background
+  const ctx = photoCanvas.getContext("2d");
 
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, width, height);
+  // White Polaroid background
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, width, height);
 
-      // Photo area
+  // Photo area
+  const photoX = 70;
+  const photoY = 70;
+  const photoWidth = 1060;
+  const photoHeight = 1060;
 
-      const photoX = 70;
-      const photoY = 70;
-      const photoWidth = 1060;
-      const photoHeight = 1060;
+  const videoWidth = capturedPhotoSource.width;
+  const videoHeight = capturedPhotoSource.height;
 
-      const videoWidth = video.videoWidth;
-      const videoHeight = video.videoHeight;
+  const targetRatio = photoWidth / photoHeight;
+  const videoRatio = videoWidth / videoHeight;
 
-      const targetRatio = photoWidth / photoHeight;
-      const videoRatio = videoWidth / videoHeight;
+  let sourceX = 0;
+  let sourceY = 0;
+  let sourceWidth = videoWidth;
+  let sourceHeight = videoHeight;
 
-      let sourceX = 0;
-      let sourceY = 0;
-      let sourceWidth = videoWidth;
-      let sourceHeight = videoHeight;
+  if (videoRatio > targetRatio) {
+    sourceWidth = videoHeight * targetRatio;
+    sourceX = (videoWidth - sourceWidth) / 2;
+  } else {
+    sourceHeight = videoWidth / targetRatio;
+    sourceY = (videoHeight - sourceHeight) / 2;
+  }
 
-      if (videoRatio > targetRatio) {
+  // Draw the captured photo
+  ctx.drawImage(
+    capturedPhotoSource,
+    sourceX,
+    sourceY,
+    sourceWidth,
+    sourceHeight,
+    photoX,
+    photoY,
+    photoWidth,
+    photoHeight
+  );
 
-        sourceWidth = videoHeight * targetRatio;
-        sourceX = (videoWidth - sourceWidth) / 2;
+  // Wedding title
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#5b5045";
+  ctx.font = "54px Georgia";
 
-      } else {
+  ctx.fillText(
+    "A&N Wedding",
+    width / 2,
+    1240
+  );
 
-        sourceHeight = videoWidth / targetRatio;
-        sourceY = (videoHeight - sourceHeight) / 2;
+  // Wedding date
+  ctx.fillStyle = "#a08d79";
+  ctx.font = "24px Arial";
 
-      }
+  ctx.fillText(
+    "5 DECEMBER 2026",
+    width / 2,
+    1290
+  );
 
-      // Mirror front camera image only
+  // Caption: always use the latest text
+  const caption =
+    captionInput.value.trim() || "A memory to remember";
 
-      if (currentFacingMode === "user") {
+  ctx.fillStyle = "#77695c";
+  ctx.font = "italic 29px Georgia";
 
-        ctx.save();
+  ctx.fillText(
+    caption.substring(0, 55),
+    width / 2,
+    1370
+  );
 
-        ctx.translate(photoX + photoWidth, photoY);
-        ctx.scale(-1, 1);
+  // Update the final uploaded image
+  capturedPhoto = photoCanvas.toDataURL(
+    "image/jpeg",
+    0.75
+  );
 
-        ctx.drawImage(
-          video,
-          sourceX,
-          sourceY,
-          sourceWidth,
-          sourceHeight,
-          0,
-          0,
-          photoWidth,
-          photoHeight
-        );
-
-        ctx.restore();
-
-      } else {
-
-        ctx.drawImage(
-          video,
-          sourceX,
-          sourceY,
-          sourceWidth,
-          sourceHeight,
-          photoX,
-          photoY,
-          photoWidth,
-          photoHeight
-        );
-
-      }
-
-      // Wedding title
-
-      ctx.textAlign = "center";
-      ctx.fillStyle = "#5b5045";
-      ctx.font = "54px Georgia";
-
-      ctx.fillText(
-        "A&N Wedding",
-        width / 2,
-        1240
-      );
-
-      // Wedding date
-
-      ctx.fillStyle = "#a08d79";
-      ctx.font = "24px Arial";
-
-      ctx.fillText(
-        "5 DECEMBER 2026",
-        width / 2,
-        1290
-      );
-
-      // Caption
-
-      const caption =
-        captionInput.value.trim() || "A memory to remember";
-
-      ctx.fillStyle = "#77695c";
-      ctx.font = "italic 29px Georgia";
-
-      ctx.fillText(
-        caption.substring(0, 55),
-        width / 2,
-        1370
-      );
-
-      // Save final photo data
-
-      capturedPhoto = photoCanvas.toDataURL(
-        "image/jpeg",
-        0.75
-      );
-
-      previewImage.src = capturedPhoto;
-
-      previewCaption.textContent = caption;
-
-      stopCamera();
-
-      uploadStatus.classList.remove("show");
-      consentCheckbox.checked = false;
-
-      showScreen(previewPanel);
-
-    });
+  previewImage.src = capturedPhoto;
+  previewCaption.textContent = caption;
+}
 
 
-    // UPDATE PREVIEW CAPTION
+// CAPTURE PHOTO
 
-    captionInput.addEventListener("input", function() {
+captureButton.addEventListener("click", function() {
 
-      previewCaption.textContent =
-        captionInput.value.trim() || "A memory to remember";
+  if (!cameraStream || !video.videoWidth) {
+    showCameraError("Please start your camera first.");
+    return;
+  }
 
-    });
+  // Save a separate copy of the camera image
+  const originalCanvas = document.createElement("canvas");
+
+  originalCanvas.width = video.videoWidth;
+  originalCanvas.height = video.videoHeight;
+
+  const originalContext = originalCanvas.getContext("2d");
+
+  // Mirror front camera only
+  if (currentFacingMode === "user") {
+    originalContext.translate(originalCanvas.width, 0);
+    originalContext.scale(-1, 1);
+  }
+
+  originalContext.drawImage(
+    video,
+    0,
+    0,
+    originalCanvas.width,
+    originalCanvas.height
+  );
+
+  capturedPhotoSource = originalCanvas;
+
+  // Draw the Polaroid with the current caption
+  drawPolaroid();
+
+  stopCamera();
+
+  uploadStatus.classList.remove("show");
+  consentCheckbox.checked = false;
+
+  showScreen(previewPanel);
+
+});
+
+
+   
+// UPDATE PREVIEW CAPTION
+
+captionInput.addEventListener("input", function() {
+
+  const caption =
+    captionInput.value.trim() || "A memory to remember";
+
+  previewCaption.textContent = caption;
+
+  // Redraw the actual photo with the latest caption
+  if (capturedPhotoSource) {
+    drawPolaroid();
+  }
+
+});
 
 
     // RETAKE PHOTO
